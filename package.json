@@ -1,0 +1,29 @@
+{
+  "name": "oauth-web-ui",
+  "version": "1.0.0",
+  "description": "Web UI to manage oauth 2.0 tokens and see user usage per client ID",
+  "main": "app.js",
+  "dependencies": {
+    "auth-server": "^2.2.3",
+    "connect": "^2.8.8",
+    "ejs": "^2.2.4",
+    "mongoose": "^3.8.23",
+    "express": "^4.11.2",
+    "node-uuid": "^1.4.2",
+    "util": "^0.10.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexzhxin/oauth-web-ui.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexzhxin/oauth-web-ui/issues"
+  },
+  "homepage": "https://github.com/alexzhxin/oauth-web-ui"
+}
