@@ -5,10 +5,11 @@
   "main": "app.js",
   "dependencies": {
     "auth-server": "^2.2.3",
+    "body-parser": "^1.12.0",
     "connect": "^2.8.8",
     "ejs": "^2.2.4",
-    "mongoose": "^3.8.23",
     "express": "^4.11.2",
+    "mongoose": "^3.8.23",
     "node-uuid": "^1.4.2",
     "util": "^0.10.3"
   },
