@@ -9,6 +9,7 @@
     "connect": "^2.8.8",
     "ejs": "^2.2.4",
     "express": "^4.11.2",
+    "express-session": "^1.10.3",
     "mongoose": "^3.8.23",
     "node-uuid": "^1.4.2",
     "util": "^0.10.3"
