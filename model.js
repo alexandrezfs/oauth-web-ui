@@ -17,10 +17,12 @@ mongoose.connect(config.values.mongodb_addr, function (err) {
 var ClientSchema = new Schema({
     id: String,
     secret: String,
+    name: String,
     grantTypes: [],
     created_at: {type: Date, default: Date.now},
     updated_at: {type: Date, default: Date.now}
 });
+
 
 
 exports.ModelContainer = {
