@@ -88,4 +88,11 @@ app.get('/client/remove/:_id', function (req, res) {
     }
 });
 
+app.get('/logout', function(req, res) {
+
+    req.session.isConnected = null;
+
+    res.redirect('/');
+});
+
 app.listen(config.values.web_server_port);
