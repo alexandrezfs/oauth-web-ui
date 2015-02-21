@@ -68,7 +68,6 @@ app.post('/client/add', function (req, res) {
             oauth.buildAuthServices();
             res.redirect('/list');
         });
-
     }
     else {
         res.redirect('/');
