@@ -99,7 +99,7 @@ var startAuthServer = function () {
         },
         apiEndpoint = function (req, res) {
             authServer.validateAccessToken(req, function (validationResponse) {
-                res.write(util.inspect(validationResponse));
+                res.write(JSON.stringify(validationResponse));
                 res.end();
             });
         };
