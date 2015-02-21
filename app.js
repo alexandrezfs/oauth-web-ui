@@ -7,6 +7,8 @@ var model = require('./model');
 var oauth = require('./oauth');
 var md5 = require('MD5');
 
+oauth.buildAuthServices();
+
 app.use(bodyParser.json());
 app.use(session({secret: 'ssshhhhh'}));
 app.use(express.static(__dirname + '/public'));
@@ -63,6 +65,7 @@ app.post('/client/add', function (req, res) {
 
         var clientM = model.ModelContainer.ClientModel(client);
         clientM.save(function (err) {
+            oauth.buildAuthServices();
             res.redirect('/list');
         });
 

@@ -5,82 +5,109 @@ var oauth = require('auth-server'),
     model = require('./model'),
     config = require('./config');
 
-//Getting clients
+var authCodes = {},
+    accessTokens = {},
+    clientService = {},
+    tokenService = {},
+    authorizationService = {},
+    membershipService = {},
+    supportedScopes = {},
+    expiresIn = {},
+    authServer = null,
+    server = null;
 
-model.ModelContainer.ClientModel.find({}, function(err, mongoClients) {
 
-    //Building a consistent client structure
-    var clients = {};
+var buildAuthServices = function () {
 
-    mongoClients.forEach(function(client) {
-        clients[client.id] = client;
+    model.ModelContainer.ClientModel.find({}, function (err, mongoClients) {
+
+        //Building a consistent client structure
+        var clients = {};
+
+        mongoClients.forEach(function (client) {
+            clients[client.id] = client;
+        });
+
+        authCodes = {},
+            accessTokens = {},
+            clientService = {
+                getById: function (id, callback) {
+                    return callback(clients[id]);
+                },
+                isValidRedirectUri: function (client, uri) {
+                    return true;
+                }
+            },
+            tokenService = {
+                generateToken: function () {
+                    return uuid.v4();
+                },
+                generateDeviceCode: function () {
+                    return uuid.v4();
+                }
+            },
+            authorizationService = {
+                saveAuthorizationCode: function (codeData, callback) {
+                    authCodes[codeData.code] = codeData;
+                    return callback();
+                },
+                saveAccessToken: function (tokenData, callback) {
+                    accessTokens[tokenData.access_token] = tokenData;
+                    return callback();
+                },
+                getAuthorizationCode: function (code, callback) {
+                    return callback(authCodes[code]);
+                },
+                getAccessToken: function (token, callback) {
+                    return callback(accessTokens[token]);
+                }
+            },
+            membershipService = {
+                areUserCredentialsValid: function (userName, password, scope, callback) {
+                    return callback(true);
+                }
+            },
+            supportedScopes = ['profile', 'status', 'avatar'],
+            expiresIn = 3600,
+            authServer = new oauth(clientService, tokenService, authorizationService, membershipService, expiresIn, supportedScopes);
+
+            if(!server) {
+                startAuthServer();
+            }
+
     });
 
-    var authCodes = {},
-        accessTokens = {},
-        clientService = {
-            getById: function(id, callback) {
-                return callback(clients[id]);
-            },
-            isValidRedirectUri: function(client, uri) { return true; }
-        },
-        tokenService = {
-            generateToken: function() {
-                return uuid.v4();
-            },
-            generateDeviceCode: function() {
-                return uuid.v4();
-            }
-        },
-        authorizationService = {
-            saveAuthorizationCode: function(codeData, callback) {
-                authCodes[codeData.code] = codeData;
-                return callback();
-            },
-            saveAccessToken: function(tokenData, callback) {
-                accessTokens[tokenData.access_token] = tokenData;
-                return callback();
-            },
-            getAuthorizationCode: function(code, callback) {
-                return callback(authCodes[code]);
-            },
-            getAccessToken: function(token, callback) {
-                return callback(accessTokens[token]);
-            }
-        },
-        membershipService = {
-            areUserCredentialsValid: function(userName, password, scope, callback) {
-                return callback(true);
-            }
-        },
-        supportedScopes = [ 'profile', 'status', 'avatar'],
-        expiresIn = 3600,
-        authServer = new oauth(clientService, tokenService, authorizationService, membershipService, expiresIn, supportedScopes);
+};
 
-    var authorize = function(req, res) {
-            authServer.authorizeRequest(req, 'userid', function(response) {
+exports.buildAuthServices = buildAuthServices;
+
+
+var startAuthServer = function () {
+
+
+    var authorize = function (req, res) {
+            authServer.authorizeRequest(req, 'userid', function (response) {
                 res.write(util.inspect(response));
                 res.end();
             });
         },
-        grantToken = function(req, res) {
-            authServer.grantAccessToken(req, 'userid', function(token) {
+        grantToken = function (req, res) {
+            authServer.grantAccessToken(req, 'userid', function (token) {
                 res.write(util.inspect(token));
                 res.end();
             });
         },
-        apiEndpoint = function(req, res) {
-            authServer.validateAccessToken(req, function(validationResponse) {
+        apiEndpoint = function (req, res) {
+            authServer.validateAccessToken(req, function (validationResponse) {
                 res.write(util.inspect(validationResponse));
                 res.end();
             });
         };
 
-    var server = connect()
+    server = connect()
         .use(connect.query())
         .use(connect.bodyParser())
         .use('/oauth/authorize', authorize)
         .use('/oauth/token', grantToken)
         .use('/api/test', apiEndpoint).listen(config.values.auth_server_port);
-
-});
+};
