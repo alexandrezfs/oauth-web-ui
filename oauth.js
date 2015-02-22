@@ -99,8 +99,27 @@ var startAuthServer = function () {
         },
         apiEndpoint = function (req, res) {
             authServer.validateAccessToken(req, function (validationResponse) {
-                res.write(JSON.stringify(validationResponse));
-                res.end();
+
+                console.log(validationResponse);
+
+                if (validationResponse.clientId && validationResponse.isValid) {
+
+                    //Increment client call
+                    model.ModelContainer.ClientModel.findOne({id: validationResponse.clientId}, function(err, client) {
+
+                        console.log(client);
+
+                        client.call_count = client.call_count + 1;
+                        client.save();
+
+                        res.write(JSON.stringify(validationResponse));
+                        res.end();
+                    });
+                }
+                else {
+                    res.write(JSON.stringify(validationResponse));
+                    res.end();
+                }
             });
         };
 

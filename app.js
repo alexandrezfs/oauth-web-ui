@@ -61,6 +61,7 @@ app.post('/client/add', function (req, res) {
         var client = req.body;
         client.id = md5(new Date().getTime());
         client.secret = md5(new Date().getTime() - 1);
+        client.call_count = 0;
         client.grantTypes = ['implicit', 'password', 'client_credentials', 'authorization_code'];
 
         var clientM = model.ModelContainer.ClientModel(client);

@@ -18,6 +18,7 @@ var ClientSchema = new Schema({
     id: String,
     secret: String,
     name: String,
+    call_count: Number,
     grantTypes: [],
     created_at: {type: Date, default: Date.now},
     updated_at: {type: Date, default: Date.now}
