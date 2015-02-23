@@ -82,6 +82,7 @@ app.get('/client/remove/:_id', function (req, res) {
     if (req.session.isConnected) {
 
         model.ModelContainer.ClientModel.remove({_id: req.params._id}, function (err) {
+            oauth.buildAuthServices();
             res.redirect('/list');
         });
     }
