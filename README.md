@@ -1,7 +1,7 @@
 # oauth-web-ui
 Web UI to manage oauth 2.0 tokens and see user usage per client ID
 
-+ NodeJS + NPM `v0.10.24` or higher
++ NodeJS + NPM `v0.10.x`
 + MongoDB `2.6.x`
 + Forever (highly recommended)
 
